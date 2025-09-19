@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+/* 
+src/
+  api/
+    cars.ts
+    winners.ts
+    index.ts
+  app/
+    store.ts
+    rootReducer.ts
+  features/
+    garage/
+      GaragePage.tsx
+      GarageList.tsx
+      CarCard.tsx
+      garageSlice.ts
+      types.ts
+    winners/
+      WinnersPage.tsx
+      winnersSlice.ts
+      WinnersTable.tsx
+      types.ts
+  components/
+    Pagination.tsx
+    ColorPicker.tsx
+    CarSvg.tsx
+    Modal.tsx
+    Notification.tsx
+  utils/
+    randomName.ts
+    formatTime.ts
+    constants.ts
+  routes/
+    AppRouter.tsx
+  styles/
+  index.tsx
+
+*/

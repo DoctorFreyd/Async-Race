@@ -27,6 +27,19 @@ export const garageSlice = createSlice({
         state.loading = false;
         state.error = action.error.message ?? 'Failed to load cars';
       });
+    builder
+      .addCase(carsAPI.createCar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(carsAPI.createCar.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cars.push(action.payload);
+      })
+      .addCase(carsAPI.createCar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? 'Failed to create car';
+      });
   },
 });
 

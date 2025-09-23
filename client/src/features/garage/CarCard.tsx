@@ -2,15 +2,15 @@ import CarSvg from '../../components/CarSvg';
 import type { Car } from './types';
 const CarCard: React.FC<{
   car: Car;
-  onSelect: () => void;
-  onRemove: () => void;
+  onSelect: (id: number) => void;
+  onRemove: (id: number) => void;
 }> = ({ car, onSelect, onRemove }) => (
   <div className="bg-gray-800 rounded-lg border border-gray-700 p-4 mb-4">
     <div className="grid grid-cols-12 gap-4 items-center">
       {/* Left controls */}
       <div className="col-span-2 flex flex-col gap-2">
         <button
-          onClick={onSelect}
+          onClick={() => onSelect(car.id)}
           className={`px-3 py-1 text-xs rounded transition-colors ${
             car.selected ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
           }`}
@@ -19,7 +19,7 @@ const CarCard: React.FC<{
           Select
         </button>
         <button
-          onClick={onRemove}
+          onClick={() => onRemove(car.id)}
           className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
           aria-label={`Remove ${car.name}`}
         >

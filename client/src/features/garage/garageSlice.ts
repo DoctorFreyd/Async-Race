@@ -15,6 +15,7 @@ export const garageSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Get Cars
     builder
       .addCase(carsAPI.getCars.pending, (state) => {
         state.loading = true;
@@ -27,6 +28,7 @@ export const garageSlice = createSlice({
         state.loading = false;
         state.error = action.error.message ?? 'Failed to load cars';
       });
+    // Create Car
     builder
       .addCase(carsAPI.createCar.pending, (state) => {
         state.loading = true;
@@ -39,6 +41,34 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.createCar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? 'Failed to create car';
+      });
+    // Update Car
+    builder
+      .addCase(carsAPI.updateCar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(carsAPI.updateCar.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cars = state.cars.map((car) => (car.id === action.payload.id ? action.payload : car));
+      })
+      .addCase(carsAPI.updateCar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? 'Failed to update car';
+      });
+    // Delete Car
+    builder
+      .addCase(carsAPI.deleteCar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(carsAPI.deleteCar.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cars = state.cars.filter((car) => car.id !== action.meta.arg);
+      })
+      .addCase(carsAPI.deleteCar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to delete car';
       });
   },
 });

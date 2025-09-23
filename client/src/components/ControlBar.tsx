@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { carsAPI } from '../api';
 
-const ControlBar: React.FC = () => {
+interface ControlBarProps {
+  selectedCarId?: number | null;
+}
+
+const ControlBar: React.FC<ControlBarProps> = ({ selectedCarId }) => {
   const [carName, setCarName] = useState<string>('');
   const [carColor, setCarColor] = useState<string>('#ffffff');
 
   const dispatch = useAppDispatch();
-  // const { loading, error } = useAppDispatch((state) => state.garage);
+  // Handle Create
   const handleCreate = async () => {
     if (!carName.trim()) {
       alert('Please enter a car name');
@@ -16,11 +20,34 @@ const ControlBar: React.FC = () => {
     try {
       await dispatch(carsAPI.createCar({ name: carName, color: carColor })).unwrap();
       setCarName('');
+
       setCarColor('#ffffff');
     } catch (err) {
       console.error('Failed to create car:', err);
     }
   };
+  // Handle Update
+  const handleUpdate = async (carId?: number | null) => {
+    if (carId == null) {
+      alert('Please select a car to update');
+      return;
+    }
+
+    if (!carName.trim()) {
+      alert('Please enter a car name');
+      return;
+    }
+
+    try {
+      await dispatch(carsAPI.updateCar({ name: carName, color: carColor, id: carId }));
+      setCarName('');
+      setCarColor('#ffffff');
+    } catch (err) {
+      console.error('Failed to update car:', err);
+    }
+  };
+  // Handle Generate
+  const handleGenerate = async () => {};
   return (
     <section className="bg-gray-900/80 backdrop-blur-md p-5 rounded-2xl border border-gray-700 shadow-lg max-w-4xl mx-auto">
       <div className="flex flex-wrap items-center gap-6">
@@ -61,10 +88,16 @@ const ControlBar: React.FC = () => {
           >
             Create
           </button>
-          <button className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm rounded-lg shadow transition">
+          <button
+            onClick={() => handleUpdate(selectedCarId)}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm rounded-lg shadow transition"
+          >
             Update
           </button>
-          <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg shadow transition">
+          <button
+            onClick={handleGenerate}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg shadow transition"
+          >
             Generate
           </button>
           <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow transition">

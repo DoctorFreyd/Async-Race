@@ -28,3 +28,22 @@ export const createCar = createAsyncThunk<
     return rejectWithValue('error message');
   }
 });
+//  Update a Car
+export const updateCar = createAsyncThunk<
+  Car,
+  Pick<Car, 'name' | 'color' | 'id'>,
+  { rejectValue: string }
+>('cars/update', async (carData, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.put<Car>(`${API_URL}/garage/${carData.id}`, carData);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return rejectWithValue('error message');
+  }
+});
+//  Delete a Car
+export const deleteCar = createAsyncThunk('cars/delete', async (id: number) => {
+  const { data } = await axios.delete(`${API_URL}/garage/${id}`);
+  return data;
+});

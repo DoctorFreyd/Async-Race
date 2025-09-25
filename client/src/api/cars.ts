@@ -1,6 +1,7 @@
 import { API_URL } from './index';
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { generateRandomCars } from '../utils/randomCars';
 
 export interface Car {
   id: number;
@@ -24,7 +25,6 @@ export const createCar = createAsyncThunk<
     const { data } = await axios.post<Car>(`${API_URL}/garage`, carData);
     return data;
   } catch (error) {
-    console.log(error);
     return rejectWithValue('error message');
   }
 });
@@ -38,7 +38,6 @@ export const updateCar = createAsyncThunk<
     const { data } = await axios.put<Car>(`${API_URL}/garage/${carData.id}`, carData);
     return data;
   } catch (error) {
-    console.log(error);
     return rejectWithValue('error message');
   }
 });
@@ -47,3 +46,17 @@ export const deleteCar = createAsyncThunk('cars/delete', async (id: number) => {
   const { data } = await axios.delete(`${API_URL}/garage/${id}`);
   return data;
 });
+// Create Random Cars
+export const createRandomCars = createAsyncThunk<Car[], number>(
+  'cars/createRandom',
+  async (count, { rejectWithValue }) => {
+    try {
+      const randomCars = generateRandomCars(count);
+      const requests = randomCars.map((car) => axios.post<Car>(`${API_URL}/garage`, car));
+      const responses = await Promise.all(requests);
+      return responses.map((res) => res.data);
+    } catch (error) {
+      return rejectWithValue('error message');
+    }
+  },
+);

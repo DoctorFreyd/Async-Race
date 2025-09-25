@@ -6,14 +6,19 @@ interface GarageState {
   cars: Car[];
   loading: boolean;
   error: string | null;
+  selectedCarId: number | null;
 }
 
-const initialState: GarageState = { cars: [], loading: false, error: null };
+const initialState: GarageState = { cars: [], loading: false, error: null, selectedCarId: null };
 
 export const garageSlice = createSlice({
   name: 'garage',
   initialState,
-  reducers: {},
+  reducers: {
+    selectCar: (state, action: { payload: number }) => {
+      state.selectedCarId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     // Get Cars
     builder
@@ -27,9 +32,8 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.getCars.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? 'Failed to load cars';
-      });
-    // Create Car
-    builder
+      })
+      // Create Car
       .addCase(carsAPI.createCar.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -41,9 +45,8 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.createCar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? 'Failed to create car';
-      });
-    // Update Car
-    builder
+      })
+      // Update Car
       .addCase(carsAPI.updateCar.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -55,9 +58,8 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.updateCar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? 'Failed to update car';
-      });
-    // Delete Car
-    builder
+      })
+      // Delete Car
       .addCase(carsAPI.deleteCar.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -69,8 +71,21 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.deleteCar.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? 'Failed to delete car';
+      })
+      // Create Random Cars
+      .addCase(carsAPI.createRandomCars.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(carsAPI.createRandomCars.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cars.push(...action.payload);
+      })
+      .addCase(carsAPI.createRandomCars.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
+export const { selectCar } = garageSlice.actions;
 export default garageSlice.reducer;

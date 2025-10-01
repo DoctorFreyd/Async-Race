@@ -2,10 +2,6 @@
 
 ## Score: 125/400
 
-## Live Demo
-
-https://your-deployment-link.vercel.app
-
 ---
 
 ## Checklist
@@ -115,6 +111,5 @@ npm run dev
 
 ## Future Plans
 
-- Implement car creation/update
 - Implement winners page and race functionality
 - Add more interactive features and UI enhancements

@@ -60,3 +60,29 @@ export const createRandomCars = createAsyncThunk<Car[], number>(
     }
   },
 );
+// Car Engine
+// Start
+export const startEngine = createAsyncThunk<
+  { id: number; velocity: number; distance: number },
+  number,
+  { rejectValue: string }
+>('cars/startEngine', async (id, { rejectWithValue }) => {
+  try {
+    const { data } = await axios.patch(`${API_URL}/engine?id=${id}&status=started`);
+    return { id, velocity: data.velocity, distance: data.distance };
+  } catch {
+    return rejectWithValue('Failed to start engine');
+  }
+});
+// Stop
+export const stopEngine = createAsyncThunk(
+  'cars/stopEngine',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await axios.patch(`${API_URL}/engine?id=${id}&status=stopped`);
+      return { id };
+    } catch {
+      return rejectWithValue('Failed to stop engine');
+    }
+  },
+);

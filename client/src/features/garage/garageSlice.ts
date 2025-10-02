@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { Car } from './types';
+import type { Car, CarRaceState } from './types';
 import { carsAPI } from '../../api';
 
 interface GarageState {
@@ -17,6 +17,12 @@ export const garageSlice = createSlice({
   reducers: {
     selectCar: (state, action: { payload: number }) => {
       state.selectedCarId = action.payload;
+    },
+    updateRace: (state, action: { payload: { id: number; race: CarRaceState } }) => {
+      const car = state.cars.find((c) => c.id === action.payload.id);
+      if (car) {
+        car.race = action.payload.race;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -83,9 +89,38 @@ export const garageSlice = createSlice({
       .addCase(carsAPI.createRandomCars.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // Car Engine
+      // Start
+      .addCase(carsAPI.startEngine.fulfilled, (state, action) => {
+        const { id, velocity, distance } = action.payload;
+        const car = state.cars.find((c) => c.id === id);
+        if (car) {
+          // track width in pixels
+          const trackWidth = 600;
+          const finishOffset = 70;
+          const maxPosition = trackWidth - finishOffset;
+          // scaling coefficient
+          const scale = maxPosition / distance;
+          const uiDistance = distance * scale;
+          // duration calculated based on UI distance
+          const duration = Math.round((uiDistance / velocity) * 1000);
+          car.race = {
+            isMoving: true,
+            position: uiDistance,
+            durationMs: duration,
+          };
+        }
+      })
+      // Stop
+      .addCase(carsAPI.stopEngine.fulfilled, (state, action) => {
+        const car = state.cars.find((c) => c.id === action.payload.id);
+        if (car) {
+          car.race = { isMoving: false, position: 0, durationMs: 0 };
+        }
       });
   },
 });
 
-export const { selectCar } = garageSlice.actions;
+export const { selectCar, updateRace } = garageSlice.actions;
 export default garageSlice.reducer;

@@ -1,6 +1,6 @@
 # Async Race
 
-## Score: 125/400
+## Score: 275/400
 
 ---
 
@@ -31,14 +31,14 @@
 
 ### Race (170 points)
 
-- [ ] Start Engine Animation - 0/20
-- [ ] Stop Engine Animation - 0/20
-- [ ] Responsive Animation - 0/30
-- [ ] Start Race Button - 0/10
+- [x] Start Engine Animation - 20/20
+- [x] Stop Engine Animation - 20/20
+- [x] Responsive Animation - 30/30
+- [x] Start Race Button - 10/10
 - [ ] Reset Race Button - 0/15
 - [ ] Winner Announcement - 0/5
-- [ ] Button States (disable/enable) - 0/20
-- [ ] Actions during the race (delete/edit/add car, change page/view) - 0/50
+- [x] Button States (disable/enable) - 20/20
+- [x] Actions during the race (delete/edit/add car, change page/view) - 50/50
 
 ### Prettier and ESLint Configuration (10 points)
 

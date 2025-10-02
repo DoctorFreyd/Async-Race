@@ -26,8 +26,6 @@ const ControlBar: React.FC<ControlBarProps> = () => {
 
     try {
       const newCar = await dispatch(carsAPI.createCar({ name: carName, color: carColor })).unwrap();
-
-      // Сразу делаем созданную машину выбранной
       dispatch(selectCar(newCar.id));
       resetForm();
     } catch (err) {

@@ -1,6 +1,6 @@
 # Async Race
 
-## Score: 275/400
+## Score: 350/500
 
 ---
 
@@ -11,7 +11,7 @@
 - [x] Two Views: "Garage" and "Winners" - 10/10
 - [x] Garage View Content (Name, Car creation/editing panel, Race control panel, Garage section) - 20/30
 - [ ] Winners View Content (Name, Winners table, Pagination) - 0/10
-- [x] Persistent State (page numbers, input states) - 10/30
+- [x] Persistent State (page numbers, input states) - 15/30
 
 ### Garage View (90 points)
 
@@ -19,8 +19,8 @@
 - [x] Color Selection - 10/10
 - [x] Random Car Creation (100 cars per click) - 20/20
 - [x] Car Management Buttons (update/delete) - 10/10
-- [ ] Pagination (7 cars per page) - 0/10
-- [ ] Extra Points: Empty garage handling, previous page on deletion - 0/20
+- [x] Pagination (7 cars per page) - 10/10
+- [x] Extra Points: Empty garage handling, previous page on deletion - 20/20
 
 ### Winners View (50 points)
 
@@ -35,8 +35,8 @@
 - [x] Stop Engine Animation - 20/20
 - [x] Responsive Animation - 30/30
 - [x] Start Race Button - 10/10
-- [ ] Reset Race Button - 0/15
-- [ ] Winner Announcement - 0/5
+- [x] Reset Race Button - 15/15
+- [x] Winner Announcement - 5/5
 - [x] Button States (disable/enable) - 20/20
 - [x] Actions during the race (delete/edit/add car, change page/view) - 50/50
 
@@ -68,7 +68,7 @@ Toaster notifications work, and TailwindCSS styling is applied.
 - [x] Toaster notifications setup
 - [x] Car creation/update functionality
 - [ ] Winners page
-- [ ] Race functionality
+- [x] Race functionality
 
 ---
 

@@ -4,3 +4,8 @@ export interface Winner {
   wins: number;
   bestTime: number;
 }
+export interface RaceResult {
+  id: number;
+  name: string;
+  time: number;
+}

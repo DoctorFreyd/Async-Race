@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { carsAPI } from '../api';
+import { winnersAPI } from '../api';
 import toast from 'react-hot-toast';
 import { selectCar } from '../features/garage/garageSlice';
+import { type Car } from '../features/garage/types';
+import { type RaceResult } from '../features/winners/types';
 
 interface ControlBarProps {}
 
@@ -14,6 +17,7 @@ const ControlBar: React.FC<ControlBarProps> = () => {
   const [carName, setCarName] = useState<string>('');
   const [carColor, setCarColor] = useState<string>(DEFAULT_COLOR);
   const dispatch = useAppDispatch();
+  const { cars } = useAppSelector((state) => state.garage);
   const selectedCarId = useAppSelector((state) => state.garage.selectedCarId);
 
   const resetForm = () => {
@@ -50,16 +54,53 @@ const ControlBar: React.FC<ControlBarProps> = () => {
   const handleGenerate = async (): Promise<void> => {
     const toastId = toast.loading('Generating the Cars...');
     try {
-      const newCars = await dispatch(carsAPI.createRandomCars(100)).unwrap();
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await dispatch(carsAPI.createRandomCars(100)).unwrap();
+      await dispatch(carsAPI.getCars({ page: 1, limit: 7 })).unwrap();
 
-      if (newCars.length > 0) dispatch(selectCar(newCars[0].id));
+      const { cars } = useAppSelector((state) => state.garage);
+      if (cars.length > 0) dispatch(selectCar(cars[0].id));
+
       toast.success('Generated 100 cars!', { id: toastId });
     } catch (err) {
       toast.error('Error generating cars', { id: toastId });
     }
   };
+  const handleRace = async () => {
+    try {
+      const raceResults = await Promise.all(
+        cars.map(async (car: Car) => {
+          const { velocity, distance } = await dispatch(carsAPI.startEngine(car.id)).unwrap();
+          const time = distance / velocity;
+          return { id: car.id, name: car.name, time };
+        }),
+      );
 
+      const winner: RaceResult = raceResults.reduce<RaceResult>(
+        (prev: RaceResult, curr: RaceResult) => (curr.time < prev.time ? curr : prev),
+        raceResults[0],
+      );
+
+      await dispatch(
+        winnersAPI.createWinner({
+          id: winner.id,
+          name: winner.name,
+          wins: 1,
+          bestTime: winner.time,
+        }),
+      ).unwrap();
+      toast.success('Race completed!');
+    } catch (error) {
+      toast.error('Race failed');
+    }
+  };
+  const handleReset = async () => {
+    try {
+      const resetPromises = cars.map((car: Car) => dispatch(carsAPI.stopEngine(car.id)).unwrap());
+      await Promise.allSettled(resetPromises);
+    } catch {
+      toast.error('Reset failed');
+    }
+  };
   return (
     <section className="bg-gray-900/80 backdrop-blur-md p-5 rounded-2xl border border-gray-700 shadow-lg max-w-4xl mx-auto">
       <div className="flex flex-wrap items-center gap-6">
@@ -112,10 +153,16 @@ const ControlBar: React.FC<ControlBarProps> = () => {
           >
             Generate
           </button>
-          <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow transition">
+          <button
+            onClick={handleRace}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow transition"
+          >
             Race
           </button>
-          <button className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded-lg shadow transition">
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded-lg shadow transition"
+          >
             Reset
           </button>
         </div>

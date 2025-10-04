@@ -10,11 +10,19 @@ export interface Car {
   loading: boolean;
 }
 
-// Get All Cars
-export const getCars = createAsyncThunk('cars/get', async () => {
-  const { data } = await axios.get<Car[]>(`${API_URL}/garage`);
-  return data as Car[];
-});
+export const getCars = createAsyncThunk(
+  'cars/get',
+  async ({ page, limit }: { page: number; limit: number }) => {
+    const response = await axios.get<Car[]>(`${API_URL}/garage`, {
+      params: { _page: page, _limit: limit },
+    });
+
+    return {
+      cars: response.data as Car[],
+      totalCount: Number(response.headers['x-total-count']),
+    };
+  },
+);
 // Create a Car
 export const createCar = createAsyncThunk<
   Car,
